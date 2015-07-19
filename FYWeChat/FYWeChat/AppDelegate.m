@@ -11,6 +11,7 @@
 @interface AppDelegate ()
 {
     XMPPStream *_xmppStream;
+    XMPPResaultBlock _resaultblock;
 }
 /*
  登陆的实现：
@@ -32,8 +33,10 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    [WeChatNavigationController setupNaBarThem];
+   
     return YES;
 }
 
@@ -69,14 +72,16 @@
 //连接到服务器
 -(void)ConnectToHost
 {
-    NSLog(@"开始连接到服务器");
+    FYLog(@"开始连接到服务器");
     if (_xmppStream ==nil)
     {
         [self SetUpXMPPStream];
     }
+//    从应用程序沙盒获取用户名
+    NSString *username=[[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
     //    设置JID
     //    resource 标识用户登录的客户端
-    XMPPJID *myJID=[XMPPJID jidWithUser:@"lisi" domain:@"fengyanyan.local" resource:@"iphone"];
+    XMPPJID *myJID=[XMPPJID jidWithUser:username domain:@"fengyanyan.local" resource:@"iphone"];
     _xmppStream.myJID=myJID;
     
     //    设置服务器的域名
@@ -88,24 +93,26 @@
     NSError *error=nil;
     if (![_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error])
     {
-        NSLog(@"%@",error);
+        FYLog(@"%@",error);
     }
 }
 //  发送密码进行授权
 -(void)SendPasswordToHost
 {
-    NSLog(@"发送密码进行授权");
+//    从应用程序沙盒中获取密码
+    NSString *pwd=[[NSUserDefaults standardUserDefaults]objectForKey:@"password"];
+    FYLog(@"发送密码进行授权");
     NSError *error=nil;
-    [_xmppStream authenticateWithPassword:@"123456" error:&error];
+    [_xmppStream authenticateWithPassword:pwd error:&error];
     if (error)
     {
-        NSLog(@"%@",error);
+        FYLog(@"%@",error);
     }
 }
 //授权成功之后，发送“在线”消息
 -(void)SenOnlineToHost
 {
-    NSLog(@"发送在线消息");
+    FYLog(@"发送在线消息");
     XMPPPresence *presence=[XMPPPresence presence];
     [_xmppStream sendElement:presence];
 }
@@ -113,7 +120,7 @@
 #pragma mark --与主机连接成功
 -(void)xmppStreamDidConnect:(XMPPStream *)sender
 {
-    NSLog(@"与主机连接成功");
+    FYLog(@"与主机连接成功");
     //    3.发送密码进行授权
     [self SendPasswordToHost];
 }
@@ -122,29 +129,52 @@
 {
     if (error)
     {
-        NSLog(@"与主机连接失败 %@",error);
+        FYLog(@"与主机连接失败 %@",error);
     }
 }
 #pragma mark --密码发送  授权成功
 -(void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
-    NSLog(@"授权成功");
+    FYLog(@"授权成功");
     //    授权成功之后 发送“在线”消息
     [self SenOnlineToHost];
+    if (_resaultblock)
+    {
+        _resaultblock(XMPPResaultTypeLoginSuccess);
+    }
 }
 #pragma mark --密码发送  授权失败
 -(void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(DDXMLElement *)error
 {
-    NSLog(@"授权失败");
+    FYLog(@"授权失败");
+//    判断block是否有值  再回调给登陆控制器
+    FYLog(@"%@",_resaultblock);
+    if (_resaultblock)
+    {
+        _resaultblock(XMPPResaultTypeLoginFailure);
+    }
 }
 #pragma mark -- 公共方法
+-(void)login:(XMPPResaultBlock)resaultBlock
+{
+//    1.先把block存起来
+    _resaultblock=resaultBlock;
+//   先断开之前与服务器的连接
+    [_xmppStream disconnect];
+//    连接到主机  连接成功之后发送密码给服务器
+    [self ConnectToHost];
+}
 -(void)logout
 {
     //    1.发送“离线”消息
     XMPPPresence *offline=[XMPPPresence presenceWithType:@"unavailable"];
-    NSLog(@"%@",offline);
+    FYLog(@"%@",offline);
     [_xmppStream sendElement:offline];
     //    2.与服务器断开连接
     [_xmppStream disconnect];
+    
+//    3.回到登陆界面
+    UIStoryboard *storyboard=[UIStoryboard storyboardWithName:@"Login" bundle:nil];
+    self.window.rootViewController=storyboard.instantiateInitialViewController;
 }
 @end

@@ -11,5 +11,13 @@
 
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#import "CategoryWF.h"
+#import "MBProgressHUD+HM.h"
+//自定义Log
+#ifdef DEBUG
+#define FYLog(...) NSLog(@"%s  %d \n %@ \n\n",__func__,__LINE__,[NSString stringWithFormat:__VA_ARGS__])
+#else
+#define FYLog(...)
+#endif
 
 #endif
