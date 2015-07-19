@@ -43,19 +43,24 @@
 {
     /*
      官方登陆操作的实现
-     1.把用户名和密码保存到应用程序沙盒里
+     1.把用户名和密码保存到WeChatUser的单例里面去
      2.调用AppDelegate的connect方法 连接服务器
      */
 //    隐藏键盘
     [self.view endEditing:YES];
-    NSString *username=self.userField.text;
-    NSString *pwd=self.pwdField.text;
+   
+    WeChatUser *userInfo=[WeChatUser sharedWeChatUser];
+    userInfo.username=self.userField.text;
+    userInfo.pwd=self.pwdField.text;
     
-    NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
-    [defaults setObject:username forKey:@"username"];
-    [defaults setObject:pwd forKey:@"password"];
-    [defaults synchronize];
-//    [MBProgressHUD showMessage:@"正在登录中"];
+    
+//    NSString *username=self.userField.text;
+//    NSString *pwd=self.pwdField.text;
+//    NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
+//    [defaults setObject:username forKey:@"username"];
+//    [defaults setObject:pwd forKey:@"password"];
+//    [defaults synchronize];
+    
     [MBProgressHUD showMessage:@"正在登录中" toView:self.view];
     
     __weak  typeof(self) selfVC=self;
@@ -92,6 +97,11 @@
 }
 -(void)EnterMainPage
 {
+//    更改用户的登录状态为YES
+    [WeChatUser sharedWeChatUser].loginStatus=YES;
+//    将用户的登录成功数据保存到沙盒
+    WeChatUser *userInfo=[WeChatUser sharedWeChatUser];
+    [userInfo saveUserInfoToSanBox];
 //    如果使用模态跳转页面 ，那就一定要调用dismissViewControllerAnimated这个方法，否则会出现内存问题
 //    隐藏模态窗口
     [self dismissViewControllerAnimated:YES completion:nil];

@@ -36,6 +36,23 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [WeChatNavigationController setupNaBarThem];
+//    从沙盒中加载用户的数据单例
+    [[WeChatUser sharedWeChatUser] loadUserInfoSandBox];
+    
+//    判断用户的登录状态
+//    如果是YES跳转到主界面  否则跳转到登陆界面
+    if ([WeChatUser sharedWeChatUser].loginStatus)
+    {
+     UIStoryboard *storyboard= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        self.window.rootViewController=storyboard.instantiateInitialViewController;
+//        自动登录服务器
+        [self login:nil];
+    }
+    else
+    {
+        UIStoryboard *storyboard= [UIStoryboard storyboardWithName:@"Login" bundle:nil];
+        self.window.rootViewController=storyboard.instantiateInitialViewController;
+    }
    
     return YES;
 }
@@ -78,7 +95,8 @@
         [self SetUpXMPPStream];
     }
 //    从应用程序沙盒获取用户名
-    NSString *username=[[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
+    NSString *username=[WeChatUser sharedWeChatUser].username;
+//    NSString *username=[[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
     //    设置JID
     //    resource 标识用户登录的客户端
     XMPPJID *myJID=[XMPPJID jidWithUser:username domain:@"fengyanyan.local" resource:@"iphone"];
@@ -99,8 +117,9 @@
 //  发送密码进行授权
 -(void)SendPasswordToHost
 {
+    NSString *pwd=[WeChatUser sharedWeChatUser].pwd;
 //    从应用程序沙盒中获取密码
-    NSString *pwd=[[NSUserDefaults standardUserDefaults]objectForKey:@"password"];
+//    NSString *pwd=[[NSUserDefaults standardUserDefaults]objectForKey:@"password"];
     FYLog(@"发送密码进行授权");
     NSError *error=nil;
     [_xmppStream authenticateWithPassword:pwd error:&error];
@@ -166,6 +185,9 @@
 }
 -(void)logout
 {
+//
+    [WeChatUser sharedWeChatUser].loginStatus=NO;
+    [[WeChatUser sharedWeChatUser] saveUserInfoToSanBox];
     //    1.发送“离线”消息
     XMPPPresence *offline=[XMPPPresence presenceWithType:@"unavailable"];
     FYLog(@"%@",offline);

@@ -25,7 +25,7 @@
         <!--登陆-->
         <scene sceneID="5eG-OL-My5">
             <objects>
-                <viewController id="8Ia-xg-DUa" sceneMemberID="viewController">
+                <viewController id="8Ia-xg-DUa" customClass="WeChatLoginViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jvh-yj-lH1"/>
                         <viewControllerLayoutGuide type="bottom" id="saQ-O6-iEW"/>
@@ -55,18 +55,28 @@
                                         <state key="normal" title="登陆">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="ForgetPwd:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="NHK-ey-w0Q"/>
+                                            <action selector="Login:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="XTQ-hO-E10"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cGh-kA-qg5">
                                         <rect key="frame" x="25" y="194" width="30" height="30"/>
                                         <state key="normal" title="注册">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="register:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="BxV-t1-2sg"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LOO-1U-dSb">
                                         <rect key="frame" x="207" y="194" width="75" height="30"/>
                                         <state key="normal" title="忘记密码？">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="ForgetPwd:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="JhY-So-K8T"/>
+                                        </connections>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lkE-Bb-ujY">
                                         <rect key="frame" x="-2" y="131" width="304" height="30"/>
@@ -110,6 +120,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="登陆" id="QIR-n6-WAH"/>
+                    <connections>
+                        <outlet property="Pwd" destination="lkE-Bb-ujY" id="tB7-Jc-JRc"/>
+                        <outlet property="userLable" destination="3xT-OC-GDX" id="xkf-Kl-bve"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WyR-qY-NFU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
