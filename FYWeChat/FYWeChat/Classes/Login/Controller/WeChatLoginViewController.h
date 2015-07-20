@@ -6,11 +6,12 @@
 //  Copyright (c) 2015年 冯琰琰. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "WeChatBaseViewController.h"
 
-@interface WeChatLoginViewController : UIViewController
+@interface WeChatLoginViewController : WeChatBaseViewController
 @property (weak, nonatomic) IBOutlet UILabel *userLable;
 @property (weak, nonatomic) IBOutlet UITextField *Pwd;
+
 - (IBAction)Login:(id)sender;
 
 - (IBAction)ForgetPwd:(id)sender;

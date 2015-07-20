@@ -6,9 +6,10 @@
 //  Copyright (c) 2015年 冯琰琰. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "WeChatBaseViewController.h"
 
-@interface WCOtherLoginViewController : UIViewController
+@interface WCOtherLoginViewController : WeChatBaseViewController
 - (IBAction)Back:(id)sender;
+
 
 @end

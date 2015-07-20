@@ -7,7 +7,7 @@
 //
 
 #import "WeChatLoginViewController.h"
-
+#import "AppDelegate.h"
 @interface WeChatLoginViewController ()
 
 @end
@@ -19,20 +19,29 @@
     [super viewDidLoad];
 //    从沙盒中获取用户名
     self.userLable.text=[WeChatUser sharedWeChatUser].username;
+    
+    self.Pwd.background=[UIImage stretchedImageWithName:@"operationbox_text"];
+    
+    [self.Pwd addLeftViewWithImage:@"Card_Lock"];
+    
+//    UIImageView *lockimage=[[UIImageView alloc]init];
+//    lockimage.bounds=CGRectMake(5, 5, 20, 20);
+//    lockimage.image=[UIImage imageNamed:@"Card_Lock"];
+//    self.Pwd.leftViewMode=UITextFieldViewModeAlways;
+//    self.Pwd.leftView=lockimage;
+    
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 
-- (IBAction)Login:(id)sender {
+- (IBAction)Login:(id)sender
+{
+//  保存数据到单例里面去
+    WeChatUser *userInfo=[WeChatUser sharedWeChatUser];
+    userInfo.username=self.userLable.text;
+    userInfo.pwd=self.Pwd.text;
+   
+    [super login];
 }
 
 
