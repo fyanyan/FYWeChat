@@ -8,9 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+
+@protocol WeChatRegisterViewControllerDelegate <NSObject>
+
+-(void)registerViewControllerdidFinish;
+
+@end
+
+
 @interface WeChatRegisterViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextField *PhoneNumber;
 @property (weak, nonatomic) IBOutlet UITextField *Pwd;
+@property(weak,nonatomic)id <WeChatRegisterViewControllerDelegate>delegate;
 - (IBAction)Register:(id)sender;
 - (IBAction)Back:(id)sender;
 

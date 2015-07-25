@@ -191,11 +191,17 @@
 #pragma mark --注册成功
 -(void)xmppStreamDidRegister:(XMPPStream *)sender{
     FYLog(@"注册成功");
+    if (_resaultblock) {
+        _resaultblock(XMPPResaultTypeRegisterSuccess);
+    }
 }
 #pragma mark --注册失败
 - (void)xmppStream:(XMPPStream *)sender didNotRegister:(NSXMLElement *)error
 {
     FYLog(@"注册失败");
+    if (_resaultblock) {
+        _resaultblock(XMPPResaultTypeRegisterFailure);
+    }
 }
 #pragma mark -- 公共方法
 -(void)login:(XMPPResaultBlock)resaultBlock

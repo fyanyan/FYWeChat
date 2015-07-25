@@ -8,7 +8,9 @@
 
 #import "WeChatLoginViewController.h"
 #import "AppDelegate.h"
-@interface WeChatLoginViewController ()
+#import "WeChatRegisterViewController.h"
+#import "WeChatNavigationController.h"
+@interface WeChatLoginViewController ()<WeChatRegisterViewControllerDelegate>
 
 @end
 
@@ -19,6 +21,7 @@
     [super viewDidLoad];
 //    从沙盒中获取用户名
     self.userLable.text=[WeChatUser sharedWeChatUser].username;
+    self.userLable.textAlignment=NSTextAlignmentCenter;
     
     self.Pwd.background=[UIImage stretchedImageWithName:@"operationbox_text"];
     [self.Pwd addLeftViewWithImage:@"Card_Lock"];
@@ -51,4 +54,24 @@
 }
 
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+//    获取注册控制器
+    id destVC=[segue destinationViewController];
+//    判断destVC是不是注册控制器
+    if ([destVC isKindOfClass:[WeChatNavigationController class]]) {
+//
+        WeChatNavigationController *navc=destVC;
+//        获取跟控制器
+        WeChatRegisterViewController  *registerVC=(WeChatRegisterViewController *)navc.topViewController;
+        //    设置注册控制器的代理
+        registerVC.delegate=self;
+    }
+}
+#pragma mark --WeChatRegisterViewControllerDelegate
+-(void)registerViewControllerdidFinish
+{
+//    完成注册 userlabel显示已注册的用户名
+    self.userLable.text=[WeChatUser sharedWeChatUser].registerUsername;
+}
 @end
