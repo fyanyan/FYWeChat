@@ -16,6 +16,11 @@ singleton_interface(WeChatUser)
 //登录状态 YES 表示登录  NO表示注销
 @property(nonatomic,assign)BOOL loginStatus;
 
+//注册用户名
+@property(nonatomic,copy)NSString *registerUsername;
+//注册密码
+@property(nonatomic,copy)NSString *registerPwd;
+
 //保存用户数据到沙盒
 -(void)saveUserInfoToSanBox;
 //从沙盒获取用户数据

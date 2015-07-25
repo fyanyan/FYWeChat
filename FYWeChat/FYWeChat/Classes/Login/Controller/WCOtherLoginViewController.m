@@ -55,6 +55,7 @@
     
     [super login];
     
+//    存数据到沙盒中去
 //    NSString *username=self.userField.text;
 //    NSString *pwd=self.pwdField.text;
 //    NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
@@ -62,8 +63,6 @@
 //    [defaults setObject:pwd forKey:@"password"];
 //    [defaults synchronize];
 }
-
-
 
 -(void)dealloc
 {

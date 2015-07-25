@@ -11,10 +11,12 @@
 @interface WeChatLoginViewController : WeChatBaseViewController
 @property (weak, nonatomic) IBOutlet UILabel *userLable;
 @property (weak, nonatomic) IBOutlet UITextField *Pwd;
-
+//登陆
 - (IBAction)Login:(id)sender;
-
+//忘记密码
 - (IBAction)ForgetPwd:(id)sender;
+//注册
+- (IBAction)MyRegister:(id)sender;
 
 
 @end

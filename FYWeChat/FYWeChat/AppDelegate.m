@@ -94,8 +94,17 @@
     {
         [self SetUpXMPPStream];
     }
-//    从应用程序沙盒获取用户名
-    NSString *username=[WeChatUser sharedWeChatUser].username;
+    NSString *username=nil;
+    if (self.isRegisterOperation) {
+        //    从应用单例中获取用户名
+        username=[WeChatUser sharedWeChatUser].registerUsername;
+    }
+    else
+    {
+        //    从应用单例中获取用户名
+        username=[WeChatUser sharedWeChatUser].username;
+    }
+
 //    NSString *username=[[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
     //    设置JID
     //    resource 标识用户登录的客户端
@@ -140,8 +149,14 @@
 -(void)xmppStreamDidConnect:(XMPPStream *)sender
 {
     FYLog(@"与主机连接成功");
+    if (self.isRegisterOperation) {//注册操作
+        NSString *pwd=[WeChatUser sharedWeChatUser].registerPwd;
+        //    连接成功时，有可能做注册操作  发送注册的密码到服务器
+        [_xmppStream registerWithPassword:pwd error:nil];
+    }else{//登录操作
     //    3.发送密码进行授权
     [self SendPasswordToHost];
+    }
 }
 #pragma mark --与主机断开连接
 -(void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
@@ -173,6 +188,15 @@
         _resaultblock(XMPPResaultTypeLoginFailure);
     }
 }
+#pragma mark --注册成功
+-(void)xmppStreamDidRegister:(XMPPStream *)sender{
+    FYLog(@"注册成功");
+}
+#pragma mark --注册失败
+- (void)xmppStream:(XMPPStream *)sender didNotRegister:(NSXMLElement *)error
+{
+    FYLog(@"注册失败");
+}
 #pragma mark -- 公共方法
 -(void)login:(XMPPResaultBlock)resaultBlock
 {
@@ -180,7 +204,7 @@
     _resaultblock=resaultBlock;
 //   先断开之前与服务器的连接
     [_xmppStream disconnect];
-//    连接到主机  连接成功之后发送密码给服务器
+//    连接到主机  连接成功之后发送登录密码给服务器
     [self ConnectToHost];
 }
 -(void)logout
@@ -198,5 +222,15 @@
 //    3.回到登陆界面
     UIStoryboard *storyboard=[UIStoryboard storyboardWithName:@"Login" bundle:nil];
     self.window.rootViewController=storyboard.instantiateInitialViewController;
+}
+//用户的注册方法
+-(void)register:(XMPPResaultBlock)resaultBlock
+{
+    //    1.先把block存起来
+    _resaultblock=resaultBlock;
+    //   先断开之前与服务器的连接
+    [_xmppStream disconnect];
+    //    连接到主机  连接成功之后发送注册的密码给服务器
+    [self ConnectToHost];
 }
 @end
