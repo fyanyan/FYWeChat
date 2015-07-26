@@ -46,9 +46,8 @@
     
     __weak  typeof(self) selfVC=self;
     
-    AppDelegate *app=[UIApplication sharedApplication].delegate ;
-    app.isRegisterOperation=NO;
-    [app login:^(XMPPResaultType type)
+    [WeChatXMPPTool sharedWeChatXMPPTool].isRegisterOperation=NO;
+    [[WeChatXMPPTool sharedWeChatXMPPTool] login:^(XMPPResaultType type)
      {
          [selfVC handleResaultType:type];
      }];

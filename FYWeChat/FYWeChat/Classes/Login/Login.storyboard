@@ -63,6 +63,15 @@
                                             <action selector="ForgetPwd:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="JhY-So-K8T"/>
                                         </connections>
                                     </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lkE-Bb-ujY">
+                                        <rect key="frame" x="-2" y="131" width="304" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="304" id="IWM-sH-pvK"/>
+                                            <constraint firstAttribute="height" constant="30" id="fMc-iG-oJi"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cGh-kA-qg5">
                                         <rect key="frame" x="25" y="194" width="30" height="30"/>
                                         <state key="normal" title="注册">
@@ -73,15 +82,6 @@
                                             <segue destination="S32-rj-Y9a" kind="presentation" id="Hhc-GQ-Pwa"/>
                                         </connections>
                                     </button>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lkE-Bb-ujY">
-                                        <rect key="frame" x="-2" y="131" width="304" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="304" id="IWM-sH-pvK"/>
-                                            <constraint firstAttribute="height" constant="30" id="fMc-iG-oJi"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" red="0.82813944770000003" green="0.83926255599999999" blue="0.85278566919999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -101,7 +101,8 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="DCW-re-Csi" kind="presentation" id="hLO-m3-XH1"/>
+                                    <action selector="OtherLogin:" destination="8Ia-xg-DUa" eventType="touchUpInside" id="g98-8b-x8c"/>
+                                    <segue destination="DCW-re-Csi" kind="presentation" id="9kc-jW-cIF"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="JW" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3xT-OC-GDX">
@@ -161,15 +162,6 @@
                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bPn-1D-b4H">
                                 <rect key="frame" x="100" y="108" width="400" height="200"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="NCe-rw-y4s" userLabel="用户名">
-                                        <rect key="frame" x="0.0" y="25" width="400" height="42"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="42" id="BWh-2h-lE5"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="42" id="QdU-5h-Bdm"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="y62-gx-QtX" userLabel="密码">
                                         <rect key="frame" x="0.0" y="73" width="400" height="42"/>
                                         <constraints>
@@ -191,6 +183,15 @@
                                             <action selector="LoginAction:" destination="bbX-gW-JmX" eventType="touchUpInside" id="Qte-pj-hIR"/>
                                         </connections>
                                     </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="NCe-rw-y4s" userLabel="用户名">
+                                        <rect key="frame" x="0.0" y="23" width="400" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="42" id="BWh-2h-lE5"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="42" id="QdU-5h-Bdm"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" red="0.84124447601010099" green="0.84124447601010099" blue="0.84124447601010099" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>

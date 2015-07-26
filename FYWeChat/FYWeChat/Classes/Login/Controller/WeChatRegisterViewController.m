@@ -49,12 +49,12 @@
     WeChatUser *userInfo=[WeChatUser sharedWeChatUser];
     userInfo.registerUsername=self.PhoneNumber.text;
     userInfo.registerPwd=self.Pwd.text;
-//    2.调用AppleDelegate的注册方法
+//    2.调用注册方法
     __weak typeof(self)selfVC=self;
-    AppDelegate *app=[UIApplication sharedApplication].delegate;
-    app.isRegisterOperation=YES;
+    WeChatXMPPTool *xmppTool=[WeChatXMPPTool sharedWeChatXMPPTool];
+    xmppTool.isRegisterOperation=YES;
     [MBProgressHUD showMessage:@"正在注册，请稍后" toView:self.view];
-    [app register:^(XMPPResaultType type) {
+    [xmppTool register:^(XMPPResaultType type) {
         [selfVC handleResaultType:type];
     } ];
 //    

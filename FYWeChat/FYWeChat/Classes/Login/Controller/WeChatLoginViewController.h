@@ -17,6 +17,7 @@
 - (IBAction)ForgetPwd:(id)sender;
 //注册
 - (IBAction)MyRegister:(id)sender;
+- (IBAction)OtherLogin:(id)sender;
 
 
 @end

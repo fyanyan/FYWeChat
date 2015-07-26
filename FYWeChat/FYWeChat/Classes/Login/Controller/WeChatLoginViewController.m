@@ -53,6 +53,9 @@
     NSLog(@"您好，您点击了注册按钮");
 }
 
+- (IBAction)OtherLogin:(id)sender {
+}
+
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -62,12 +65,15 @@
     if ([destVC isKindOfClass:[WeChatNavigationController class]]) {
 //
         WeChatNavigationController *navc=destVC;
-//        获取跟控制器
-        WeChatRegisterViewController  *registerVC=(WeChatRegisterViewController *)navc.topViewController;
-        //    设置注册控制器的代理
-        registerVC.delegate=self;
+        if ([navc.topViewController isKindOfClass:[WeChatRegisterViewController class]]) {
+            ////        获取跟控制器
+            WeChatRegisterViewController  *registerVC=(WeChatRegisterViewController *)navc.topViewController;
+            //        //    设置注册控制器的代理
+            registerVC.delegate=self;
+        }
     }
 }
+
 #pragma mark --WeChatRegisterViewControllerDelegate
 -(void)registerViewControllerdidFinish
 {
