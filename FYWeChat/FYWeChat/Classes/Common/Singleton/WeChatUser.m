@@ -31,4 +31,8 @@ singleton_implementation(WeChatUser)
     self.pwd=[defaults objectForKey:UserPwdKey];
     self.loginStatus=[defaults boolForKey:LoginStatus];
 }
+-(NSString *)JID
+{
+    return [NSString stringWithFormat:@"%@@%@",self.username,@"fengyanyan.local"];
+}
 @end

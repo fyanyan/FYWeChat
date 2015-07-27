@@ -25,6 +25,7 @@ typedef  void (^XMPPResaultBlock)(XMPPResaultType type);//Xmpp请求结果的blo
 singleton_interface(WeChatXMPPTool)
 
 @property(strong,nonatomic)XMPPvCardTempModule *vCard;//电子名片
+@property(strong,nonatomic)XMPPRosterCoreDataStorage *rosterStorage;//花名册的数据存储
 
 //注册的标识， YES表示注册  NO表示登录
 @property(assign,nonatomic)BOOL isRegisterOperation;

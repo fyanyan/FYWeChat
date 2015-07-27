@@ -21,6 +21,8 @@ singleton_interface(WeChatUser)
 //注册密码
 @property(nonatomic,copy)NSString *registerPwd;
 
+@property(nonatomic,copy)NSString *JID;
+
 //保存用户数据到沙盒
 -(void)saveUserInfoToSanBox;
 //从沙盒获取用户数据

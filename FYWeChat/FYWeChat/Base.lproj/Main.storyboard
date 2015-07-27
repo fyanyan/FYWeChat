@@ -58,10 +58,10 @@
             </objects>
             <point key="canvasLocation" x="-250" y="-3106"/>
         </scene>
-        <!--Root View Controller-->
+        <!--通讯录-->
         <scene sceneID="dl5-SH-r4O">
             <objects>
-                <tableViewController id="QJy-4P-PTg" sceneMemberID="viewController">
+                <tableViewController id="QJy-4P-PTg" customClass="WeChatContactViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="VaD-HK-7TH">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -79,11 +79,59 @@
                             <outlet property="delegate" destination="QJy-4P-PTg" id="VEY-W7-GX5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="ydu-5u-dv3"/>
+                    <navigationItem key="navigationItem" title="通讯录" id="ydu-5u-dv3">
+                        <barButtonItem key="rightBarButtonItem" title="添加好友" id="skY-37-sLi"/>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="sqp-Us-anD" kind="show" id="mcG-Gq-Rjm"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XvO-w1-h7r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-244" y="-1939"/>
+        </scene>
+        <!--Table View Controller-->
+        <scene sceneID="MBY-aR-bKl">
+            <objects>
+                <tableViewController hidesBottomBarWhenPushed="YES" id="sqp-Us-anD" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="oxt-cy-wGl">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="5XY-gT-DfS">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Gfi-5w-b9a">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Gfi-5w-b9a" id="ZIa-BV-IgX">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入要搜索的好友" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Cvq-nB-2eY">
+                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Cvq-nB-2eY" firstAttribute="leading" secondItem="ZIa-BV-IgX" secondAttribute="leading" id="99L-bz-kAA"/>
+                                                <constraint firstAttribute="trailing" secondItem="Cvq-nB-2eY" secondAttribute="trailing" id="YNi-Sa-5eH"/>
+                                                <constraint firstAttribute="bottom" secondItem="Cvq-nB-2eY" secondAttribute="bottom" id="fZv-aj-J8W"/>
+                                                <constraint firstItem="Cvq-nB-2eY" firstAttribute="top" secondItem="ZIa-BV-IgX" secondAttribute="top" id="zD7-sU-cfA"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="sqp-Us-anD" id="oYP-RC-bOc"/>
+                            <outlet property="delegate" destination="sqp-Us-anD" id="oAb-tR-nb5"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="55i-0p-fYD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="485" y="-1939"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="iVK-AC-I2L">

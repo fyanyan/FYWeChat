@@ -23,6 +23,10 @@
     
 //    自动连接模块
     XMPPReconnect *_reconnect;
+    
+//    花名册模块
+    XMPPRoster *_roster;//花名册模块
+    
 }
 /*
  登陆的实现：
@@ -53,6 +57,11 @@ singleton_implementation(WeChatXMPPTool)
 {
     _xmppStream=[[XMPPStream alloc]init];
 #warning 每一个模块添加进去，均需要激活
+//    添加花名册模块
+    _rosterStorage=[XMPPRosterCoreDataStorage sharedInstance];
+    _roster=[[XMPPRoster alloc]initWithRosterStorage:_rosterStorage];
+    [_roster activate:_xmppStream];
+    
 //    添加自动连接模块
     _reconnect=[[XMPPReconnect alloc]init];
     [_reconnect activate:_xmppStream];
@@ -137,6 +146,7 @@ singleton_implementation(WeChatXMPPTool)
 //    停止模块
     [_reconnect deactivate];
     [_vCard deactivate];
+    [_roster deactivate];
 //    断开连接
     [_xmppStream disconnect];
 //    清空资源
@@ -145,6 +155,8 @@ singleton_implementation(WeChatXMPPTool)
     _vCardStorage=nil;
     _vCardAvatar=nil;
     _xmppStream=nil;
+    _roster=nil;
+    _rosterStorage=nil;
     
 }
 #pragma mark --XMPPStreamDelegate
