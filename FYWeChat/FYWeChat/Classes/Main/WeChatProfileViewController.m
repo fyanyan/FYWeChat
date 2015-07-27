@@ -9,8 +9,10 @@
 #import "WeChatProfileViewController.h"
 #import "WeChatUser.h"
 #import "XMPPvCardTemp.h"
+#import "WeChatEditProfileViewController.h"
 
-@interface WeChatProfileViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+
+@interface WeChatProfileViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,EditProfileViewControllerdelegate>
 //头像
 @property (weak, nonatomic) IBOutlet UIImageView *IconView;
 //昵称
@@ -98,6 +100,17 @@
     {
 //        跳转到下一个控制器
         FYLog(@"跳转到下一个控制器");
+        [self performSegueWithIdentifier:@"EditVCardSegue" sender:cell];
+    }
+}
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+//    获取编辑个人信息的控制器
+    id desvc=segue.destinationViewController;
+    if ([desvc isKindOfClass:[WeChatEditProfileViewController class]]) {
+        WeChatEditProfileViewController *editVC=desvc;
+        editVC.profileCell=sender;
+        editVC.delegate=self;
     }
 }
 #pragma mark ----UIActionSheetdelegate
@@ -129,5 +142,38 @@
     self.IconView.image=image;
 //    返回
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)editProfileViewControllerDidSava
+{
+//    保存
+    //    更新到服务器
+    
+    //    获取当前的电子名片信息
+    XMPPvCardTemp *vcard=[WeChatXMPPTool sharedWeChatXMPPTool].vCard.myvCardTemp;
+//    重新更新所有的属性值
+    
+    //    更新到服务器
+       //    更换头像
+    if (vcard.photo) {
+        self.IconView.image=[UIImage imageWithData:vcard.photo];
+    }
+//    昵称
+    vcard.nickname=self.NickName.text;
+//    公司
+    vcard.orgName=self.Company.text;
+//    职位
+    vcard.title=self.ZhiWei.text;
+//    电话
+    vcard.note=self.Phone.text;
+//    部门
+    if (self.Depart.text.length>0) {
+        vcard.orgUnits=@[self.Depart.text];
+    }
+//    邮件
+    vcard.mailer=self.Email.text;
+
+    //    这个方法会实现数据上传到服务器，无需程序员自己操作
+    [[WeChatXMPPTool sharedWeChatXMPPTool].vCard updateMyvCardTemp:vcard];
 }
 @end

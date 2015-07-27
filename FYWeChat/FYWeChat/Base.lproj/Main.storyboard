@@ -198,7 +198,7 @@
         <!--We Chat Profile View Controller-->
         <scene sceneID="ZA1-bO-wfB">
             <objects>
-                <tableViewController id="WCP-vB-joc" customClass="WeChatProfileViewController" sceneMemberID="viewController">
+                <tableViewController hidesBottomBarWhenPushed="YES" id="WCP-vB-joc" customClass="WeChatProfileViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="hqI-4O-0LL">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -393,11 +393,62 @@
                         <outlet property="Phone" destination="cvY-HO-7cw" id="otg-a1-nTq"/>
                         <outlet property="WeiXinNum" destination="Ymu-CG-pnN" id="Sjo-e3-Y5a"/>
                         <outlet property="ZhiWei" destination="7iU-hZ-VvM" id="arW-Pr-I1Z"/>
+                        <segue destination="6wy-vi-gng" kind="show" identifier="EditVCardSegue" id="Fe1-e2-ibR"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HZ4-ce-D4h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="561" y="395"/>
+            <point key="canvasLocation" x="593" y="395"/>
+        </scene>
+        <!--We Chat Edit Profile View Controller-->
+        <scene sceneID="LBA-CS-TWG">
+            <objects>
+                <tableViewController hidesBottomBarWhenPushed="YES" id="6wy-vi-gng" customClass="WeChatEditProfileViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="jtL-Ck-WEj">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="hXy-1e-pq5">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="jS0-Nb-lgG">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jS0-Nb-lgG" id="kgH-mL-fFN">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ecV-zA-nZU">
+                                                    <rect key="frame" x="0.0" y="0.0" width="567" height="44"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ecV-zA-nZU" firstAttribute="top" secondItem="kgH-mL-fFN" secondAttribute="top" id="6A3-c9-vta"/>
+                                                <constraint firstItem="ecV-zA-nZU" firstAttribute="leading" secondItem="kgH-mL-fFN" secondAttribute="leading" id="Kle-wa-LYQ"/>
+                                                <constraint firstItem="ecV-zA-nZU" firstAttribute="leading" secondItem="kgH-mL-fFN" secondAttribute="leading" id="UPp-wO-q7m"/>
+                                                <constraint firstAttribute="bottom" secondItem="ecV-zA-nZU" secondAttribute="bottom" id="Zm9-JW-5WA"/>
+                                                <constraint firstAttribute="bottom" secondItem="ecV-zA-nZU" secondAttribute="bottom" id="jML-gB-ror"/>
+                                                <constraint firstItem="ecV-zA-nZU" firstAttribute="top" secondItem="kgH-mL-fFN" secondAttribute="top" id="o6f-JR-o8e"/>
+                                                <constraint firstAttribute="trailing" secondItem="ecV-zA-nZU" secondAttribute="trailing" id="sVR-IB-XOK"/>
+                                                <constraint firstAttribute="trailing" secondItem="ecV-zA-nZU" secondAttribute="trailing" id="xpp-J2-8CA"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="6wy-vi-gng" id="gsj-Te-bVn"/>
+                            <outlet property="delegate" destination="6wy-vi-gng" id="tyu-rf-Nnz"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="textfield" destination="ecV-zA-nZU" id="CJh-Go-HAo"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X1k-zg-guS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1264" y="395"/>
         </scene>
         <!--我-->
         <scene sceneID="ESf-js-ZpQ">
