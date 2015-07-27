@@ -20,6 +20,9 @@
     
 //    头像模块
     XMPPvCardAvatarModule *_vCardAvatar;
+    
+//    自动连接模块
+    XMPPReconnect *_reconnect;
 }
 /*
  登陆的实现：
@@ -36,6 +39,8 @@
 -(void)SendPasswordToHost;
 //4.授权成功之后，发送“在线”消息
 -(void)SenOnlineToHost;
+//释放XMPP相关的资源
+-(void)teardownXmpp;
 @end
 
 @implementation WeChatXMPPTool
@@ -48,6 +53,10 @@ singleton_implementation(WeChatXMPPTool)
 {
     _xmppStream=[[XMPPStream alloc]init];
 #warning 每一个模块添加进去，均需要激活
+//    添加自动连接模块
+    _reconnect=[[XMPPReconnect alloc]init];
+    [_reconnect activate:_xmppStream];
+    
 //    添加电子名片模块
     _vCardStorage=[XMPPvCardCoreDataStorage sharedInstance];
     _vCard=[[XMPPvCardTempModule alloc]initWithvCardStorage:_vCardStorage ];
@@ -119,6 +128,24 @@ singleton_implementation(WeChatXMPPTool)
     FYLog(@"发送在线消息");
     XMPPPresence *presence=[XMPPPresence presence];
     [_xmppStream sendElement:presence];
+}
+#pragma mark--释放XMPP相关资源
+-(void)teardownXmpp
+{
+//   移除代理
+    [_xmppStream removeDelegate:self];
+//    停止模块
+    [_reconnect deactivate];
+    [_vCard deactivate];
+//    断开连接
+    [_xmppStream disconnect];
+//    清空资源
+    _reconnect=nil;
+    _vCard=nil;
+    _vCardStorage=nil;
+    _vCardAvatar=nil;
+    _xmppStream=nil;
+    
 }
 #pragma mark --XMPPStreamDelegate
 #pragma mark --与主机连接成功
@@ -218,5 +245,9 @@ singleton_implementation(WeChatXMPPTool)
     [_xmppStream disconnect];
     //    连接到主机  连接成功之后发送注册的密码给服务器
     [self ConnectToHost];
+}
+-(void)dealloc
+{
+    [self teardownXmpp];
 }
 @end
