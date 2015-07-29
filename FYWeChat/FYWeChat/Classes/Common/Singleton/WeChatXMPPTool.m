@@ -11,7 +11,7 @@
 @interface WeChatXMPPTool()
 
 {
-    XMPPStream *_xmppStream;
+    
     XMPPResaultBlock _resaultblock;
     
 //    电子名片相关
@@ -25,7 +25,7 @@
     XMPPReconnect *_reconnect;
     
 //    花名册模块
-    XMPPRoster *_roster;//花名册模块
+ 
     
 }
 /*
@@ -56,15 +56,19 @@ singleton_implementation(WeChatXMPPTool)
 -(void)SetUpXMPPStream
 {
     _xmppStream=[[XMPPStream alloc]init];
-#warning 每一个模块添加进去，均需要激活
-//    添加花名册模块
-    _rosterStorage=[XMPPRosterCoreDataStorage sharedInstance];
-    _roster=[[XMPPRoster alloc]initWithRosterStorage:_rosterStorage];
-    [_roster activate:_xmppStream];
+
+    #warning 每一个模块添加进去，均需要激活
     
 //    添加自动连接模块
     _reconnect=[[XMPPReconnect alloc]init];
     [_reconnect activate:_xmppStream];
+    
+
+    //    添加花名册模块
+    _rosterStorage=[XMPPRosterCoreDataStorage sharedInstance];
+    _roster=[[XMPPRoster alloc]initWithRosterStorage:_rosterStorage];
+    [_roster activate:_xmppStream];
+    
     
 //    添加电子名片模块
     _vCardStorage=[XMPPvCardCoreDataStorage sharedInstance];

@@ -21,45 +21,47 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+  
 //    从数据库中家在获取好友列表
     [self locaFriends];
 }
 -(void)locaFriends
 {
-    //    如何使用Coredata获取数据
-    //    1.上下文【关联到数据库】
-  NSManagedObjectContext *context=[WeChatXMPPTool sharedWeChatXMPPTool].rosterStorage.mainThreadManagedObjectContext;
-    //    2.FetchRequest
-    NSFetchRequest *request=[NSFetchRequest fetchRequestWithEntityName:@"XMPPUserCoreDataStorageObject"];
-    //    3.设置过滤和排序
-//    当前登录用户的JID
-    NSString *jid=[WeChatUser sharedWeChatUser].JID;
-//    过滤当前登录用户的好友
-    NSPredicate *pre=[NSPredicate predicateWithFormat:@"streamBareJidStr = %@",jid];
-    request.predicate=pre;
+    //使用CoreData获取数据
+    // 1.上下文【关联到数据库XMPPRoster.sqlite】
+//    NSManagedObjectContext *context = [WeChatXMPPTool sharedWCXMPPTool]..mainThreadManagedObjectContext;
+    NSManagedObjectContext *context=[WeChatXMPPTool sharedWeChatXMPPTool].rosterStorage.mainThreadManagedObjectContext;
     
-//    排序
-    NSSortDescriptor *sort=[NSSortDescriptor sortDescriptorWithKey:@"displayName" ascending:YES];
-    request.sortDescriptors=@[sort];
-    //    4.执行请求获取数据
-//    self.friends=[context executeFetchRequest:request error:nil];
-        _resaultControl=[[NSFetchedResultsController alloc]initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
+    // 2.FetchRequest【查哪张表】
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"XMPPUserCoreDataStorageObject"];
+    
+    // 3.设置过滤和排序
+    // 过滤当前登录用户的好友
+    NSString *jid = [WeChatUser sharedWeChatUser].JID;
+    NSPredicate *pre = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@",jid];
+    request.predicate = pre;
+    
+    //排序
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"displayName" ascending:YES];
+    request.sortDescriptors = @[sort];
+    
+    // 4.执行请求获取数据
+//    self.friends = [context executeFetchRequest:request error:nil];
+//    NSLog(@"%@",self.friends);
+    _resaultControl=[[NSFetchedResultsController alloc]initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
     _resaultControl.delegate=self;
-    NSError *error=nil;
+       NSError *error=nil;
+    
     [_resaultControl performFetch:&error];
     if (error) {
-        NSLog(@"%@",error);
+        FYLog(@"%@",error);
     }
 }
-#pragma mark --当数据的内容发生变化后，会调用这个方法
+#pragma mark --当数据的内容发生变化后，会调用这个方法(当好友发生变化时，实时刷新好友列表)
 -(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     NSLog(@"数据发生改变");
     [self.tableView reloadData];
-}
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
@@ -75,15 +77,22 @@
     return _resaultControl.fetchedObjects.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    
-//   获取对应好友
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+       static NSString *CellIdentifier = @"Photos";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell==nil)
+    {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+   //   获取对应好友
     XMPPUserCoreDataStorageObject *friend=_resaultControl.fetchedObjects[indexPath.row];
-//    sectionNum
-//    "0"在线
-//    “1”离开
-//    “2”离线
+    
+////    sectionNum
+////    "0"在线
+////    “1”离开
+////    “2”离线
+    FYLog(@"%@",friend.sectionNum);
     switch ([friend.sectionNum intValue]) {
         case 0:
             cell.detailTextLabel.text=@"在线";
@@ -103,50 +112,14 @@
     
     return cell;
 }
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+//向左滑动时，删除好友
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+        FYLog(@"删除好友");
+        
+        XMPPUserCoreDataStorageObject *friend=_resaultControl.fetchedObjects[indexPath.row];
+        [[WeChatXMPPTool sharedWeChatXMPPTool].roster removeUser:friend.jid];
+    }
 }
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

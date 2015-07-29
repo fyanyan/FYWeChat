@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface WeChatContactViewController : UITableViewController
+- (IBAction)Addfriends:(id)sender;
 
 @end

@@ -26,6 +26,9 @@ singleton_interface(WeChatXMPPTool)
 
 @property(strong,nonatomic)XMPPvCardTempModule *vCard;//电子名片
 @property(strong,nonatomic)XMPPRosterCoreDataStorage *rosterStorage;//花名册的数据存储
+@property(strong,nonatomic)XMPPRoster *roster;//花名册模块
+
+@property(strong,nonatomic)XMPPStream *xmppStream;
 
 //注册的标识， YES表示注册  NO表示登录
 @property(assign,nonatomic)BOOL isRegisterOperation;
