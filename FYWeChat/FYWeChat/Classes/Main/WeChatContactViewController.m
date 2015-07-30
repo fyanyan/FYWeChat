@@ -8,6 +8,7 @@
 //
 
 #import "WeChatContactViewController.h"
+#import "WeViewController.h"
 
 @interface WeChatContactViewController ()<NSFetchedResultsControllerDelegate>
 {
@@ -121,5 +122,24 @@
         XMPPUserCoreDataStorageObject *friend=_resaultControl.fetchedObjects[indexPath.row];
         [[WeChatXMPPTool sharedWeChatXMPPTool].roster removeUser:friend.jid];
     }
+}
+
+//选中表格进入到聊天界面
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //   获取对应好友
+    XMPPUserCoreDataStorageObject *friend=_resaultControl.fetchedObjects[indexPath.row];
+//    跳转到聊天界面
+    [self performSegueWithIdentifier:@"ChatSegue" sender:friend.jid];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    id desv =segue.destinationViewController;
+    if ([desv isKindOfClass:[WeViewController class]]) {
+        WeViewController *weChat=desv;
+        weChat.friendJID=sender;
+    }
+    
 }
 @end

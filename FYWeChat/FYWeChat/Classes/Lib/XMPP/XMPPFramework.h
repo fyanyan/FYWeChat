@@ -37,7 +37,7 @@
 #import "XMPPRoster.h"
 #import "XMPPRosterCoreDataStorage.h"
 
-// 消失模块
+// 消息模块
 #import "XMPPMessageArchiving.h"
 #import "XMPPMessageArchivingCoreDataStorage.h"
 
