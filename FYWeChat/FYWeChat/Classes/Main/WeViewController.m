@@ -8,15 +8,36 @@
 
 #import "WeViewController.h"
 #import "WeChatInPutView.h"
-@interface WeViewController ()<NSFetchedResultsControllerDelegate,UITableViewDataSource,UITableViewDelegate,UITextViewDelegate>
+#import "HttpTool.h"
+
+#import "UIImageView+WebCache.h"
+
+
+
+@interface WeViewController ()<NSFetchedResultsControllerDelegate,UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 {
     NSFetchedResultsController *_resultController;
 }
+
 @property(strong,nonatomic)UITableView *tableview;
-@property(strong,nonatomic)NSLayoutConstraint *inputViewContraints;//inputview底部的约束
+@property(strong,nonatomic)NSLayoutConstraint *inputViewBottomContraints;//inputview底部的约束
+
+@property(strong,nonatomic)NSLayoutConstraint *inputViewHeightContraints;//inputview高度的约束
+
+//HTTP 工具类
+@property(strong,nonatomic)HttpTool *httptool;
+
 @end
 
 @implementation WeViewController
+
+-(HttpTool *)httptool
+{
+    if (_httptool==nil) {
+        _httptool=[[HttpTool alloc]init];
+    }
+    return _httptool;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,13 +62,13 @@
         kbHeight=kbEndFrame.size.width;
     }
     
-    self.inputViewContraints.constant=kbHeight;
+    self.inputViewBottomContraints.constant=kbHeight;
     [self scrollToBottom];
 }
 //隐藏键盘
 -(void)keyboardWillHide:(NSNotification *)noti
 {
-    self.inputViewContraints.constant=0;
+    self.inputViewBottomContraints.constant=0;
 }
 
 
@@ -68,7 +89,12 @@
     //    设置自动布局的时候 要将下面的属性设置为NO
     inputview.translatesAutoresizingMaskIntoConstraints=NO;
     inputview.Text.delegate=self;
-    [self.view addSubview:inputview];
+   
+    
+//    添加按钮的事件
+    [inputview.AddBtn addTarget:self action:@selector(abbBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    
+     [self.view addSubview:inputview];
     
 //    自动布局
 //    水平方向的约束
@@ -84,7 +110,11 @@
     [self.view addConstraints:inputHContraint];
 //    垂直方向的约束
     NSArray *tableVConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tableview]-0-[inputview(50)]-0-|" options:0 metrics:nil views:views];
-    self.inputViewContraints=tableVConstraint.lastObject;
+    
+//    添加inputview的高度约束
+    self.inputViewHeightContraints=tableVConstraint[2];
+    
+    self.inputViewBottomContraints=tableVConstraint.lastObject;
     [self.view addConstraints:tableVConstraint];
 }
 
@@ -137,36 +167,58 @@
     }
 //    获取聊天消息对象
     XMPPMessageArchiving_Message_CoreDataObject *msg=_resultController.fetchedObjects[indexPath.row];
-//    显示聊天消息
-    if ([msg.outgoing boolValue])
+    
+//    判断是图片消息还是纯文本消息
+    NSString *type=[msg.message attributeStringValueForName:@"bodyType"];
+    if ([type isEqualToString:@"image"]) {
+//        下载并显示图片
+        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:msg.body] placeholderImage:[UIImage imageNamed:@"DefaultProfileHead_qq.png"]];
+        cell.textLabel.text=nil;
+    }else if([type isEqualToString:@"text"])
     {
-//        自己发的
-        cell.textLabel.text=[NSString stringWithFormat:@"me   %@",msg.body];
+            cell.textLabel.text=[NSString stringWithFormat:@"other    %@",msg.body];
+        cell.imageView.image=nil;
     }
-    else {
-//       别人发的
-        cell.textLabel.text=[NSString stringWithFormat:@"other    %@",msg.body];
-    }
+    
+
     return cell;
 }
 
 //textviewdelegate 的代理方法
 -(void)textViewDidChange:(UITextView *)textView
 {
+//    获取contentsize
+    CGSize size=textView.contentSize;
+//    FYLog(@"__________%f ",size.height);
+    CGFloat contentHeight=size.height;
+    
+//    高度大于33  超过一行的高度  小于68 高度是在三行以内的
+    if (contentHeight>33 && contentHeight<68 ) {
+        self.inputViewHeightContraints.constant = contentHeight+18;
+    }
+    
+    
     FYLog(@"%@",textView.text);
     
 //    换行就等于点击了发送
     if ([textView.text rangeOfString:@"\n"].length !=0) {
         FYLog(@"发送数据");
-        [self sendMessageWithText:textView.text];
+        
+//        去除换行字符
+        textView.text =[textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//        text 表示发送纯文本消息  image 图片消息
+        [self sendMessageWithText:textView.text bodyType:@"text"];
         textView.text=nil;
+        self.inputViewHeightContraints.constant=50;
     }
 }
 //发送聊天消息
--(void)sendMessageWithText:(NSString *)text
+-(void)sendMessageWithText:(NSString *)text bodyType:(NSString *)bodytype
 {
 
     XMPPMessage *message=[XMPPMessage messageWithType:@"chat" to:self.friendJID];
+    [message addAttributeWithName:@"bodyType" stringValue:bodytype];
+    
 //    设置内容
     [message addBody:text];
         FYLog(@"%@",message);
@@ -177,8 +229,64 @@
 -(void)scrollToBottom
 {
     NSInteger lastRow=_resultController.fetchedObjects.count-1;
+    
+    if (lastRow<0) {//如果行数小于0，不能滚动
+        return;
+    }
+    
     NSIndexPath *lastpath=[NSIndexPath indexPathForRow:lastRow inSection:0];
     [self.tableview scrollToRowAtIndexPath:lastpath
                           atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
+//按钮的事件
+-(void)abbBtnClick
+{
+    UIImagePickerController *imagepicker=[[UIImagePickerController alloc]init];
+    imagepicker.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
+    imagepicker.delegate=self;
+    [self presentViewController:imagepicker animated:YES completion:nil];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+//    获取图片
+    UIImage *image=info[UIImagePickerControllerOriginalImage];
+    NSData *imageData=[NSData data];
+    imageData=UIImageJPEGRepresentation(image, 0.5);
+    
+//    把图片发送到文件服务器
+//   HTTP  POST  PUT
+//    PUT实现文件的上传比较简洁  比POST快
+//    PUT文件的上传路径就是下载路径
+//    文件的上传路径 http://localhost:/8080/imfileserver/Upload/Image/+"图片文件名"【程序员自己确定】
+    
+//    使用PUT上传文件的步骤
+//    1.获取文件名  用户户名+时间
+    NSString *user=[WeChatUser sharedWeChatUser].username;
+    NSDateFormatter *dateformat=[[NSDateFormatter alloc]init];
+    dateformat.dateFormat=@"yyyyMMddHHmmss";
+    NSString *timer=[dateformat stringFromDate:[NSDate date]];
+    NSString *filename=[user stringByAppendingString:timer];
+    
+//    2.拼接上传路径
+    NSString *uploadurl=[@"http://localhost:8080/imfileserver/Upload/Image/" stringByAppendingString:filename];
+    NSLog(@"%@",uploadurl);
+//    3.使用HTTP协议上传文件
+    [self.httptool uploadData:imageData url:[NSURL URLWithString:uploadurl] progressBlock:^(CGFloat progress) {
+        NSLog(@"%f",progress);
+    } completion:^(NSError *error) {
+        if (!error) {
+            NSLog(@"上传成功");
+            [self sendMessageWithText:uploadurl bodyType:@"image"];
+        }
+        else
+        {
+            NSLog(@"%@",error);
+        }
+    }];
+    
+//    图片发送成功，把图片的URL发送到openfire的服务器
 }
 @end

@@ -17,10 +17,17 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sfh-sD-KIW">
+                    <rect key="frame" x="550" y="7" width="50" height="35"/>
+                    <state key="normal" image="TypeSelectorBtn_Black">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.87490135732323226" green="0.87490135732323226" blue="0.87490135732323226" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="2QB-mi-hJJ" firstAttribute="top" secondItem="KT5-j4-rGt" secondAttribute="top" constant="9" id="50W-la-cbl"/>
+                <constraint firstAttribute="trailing" secondItem="Sfh-sD-KIW" secondAttribute="trailing" id="Cmh-K7-v7a"/>
                 <constraint firstItem="2QB-mi-hJJ" firstAttribute="leading" secondItem="KT5-j4-rGt" secondAttribute="leading" constant="50" id="ejb-rS-IYG"/>
                 <constraint firstAttribute="bottom" secondItem="2QB-mi-hJJ" secondAttribute="bottom" constant="9" id="lPX-Uj-zDO"/>
                 <constraint firstAttribute="trailing" secondItem="2QB-mi-hJJ" secondAttribute="trailing" constant="100" id="xlM-7s-cGz"/>
@@ -28,9 +35,13 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="AddBtn" destination="Sfh-sD-KIW" id="Oya-Wm-Stu"/>
                 <outlet property="Text" destination="2QB-mi-hJJ" id="rOe-Uj-19W"/>
             </connections>
             <point key="canvasLocation" x="187" y="377"/>
         </view>
     </objects>
+    <resources>
+        <image name="TypeSelectorBtn_Black" width="35" height="35"/>
+    </resources>
 </document>

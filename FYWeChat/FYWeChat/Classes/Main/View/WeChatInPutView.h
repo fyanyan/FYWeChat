@@ -11,4 +11,5 @@
 @interface WeChatInPutView : UIView
 @property (weak, nonatomic) IBOutlet UITextView *Text;
 +(instancetype)inputView;
+@property (weak, nonatomic) IBOutlet UIButton *AddBtn;
 @end

@@ -70,6 +70,9 @@
     //    邮件
     //    用mailer充当邮件
     self.Email.text=myCard.mailer;
+    
+//    邮件的解析
+    self.Email.text=myCard.emailAddresses;
 
 }
 - (void)didReceiveMemoryWarning {
