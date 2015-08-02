@@ -69,10 +69,13 @@
     self.Phone.text=myCard.note;
     //    邮件
     //    用mailer充当邮件
-    self.Email.text=myCard.mailer;
+//    self.Email.text=myCard.mailer;
     
 //    邮件的解析
-    self.Email.text=myCard.emailAddresses;
+    if (myCard.emailAddresses.count>1) {
+          self.Email.text=myCard.emailAddresses[0];
+    }
+  
 
 }
 - (void)didReceiveMemoryWarning {

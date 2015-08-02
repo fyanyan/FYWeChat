@@ -337,11 +337,15 @@ NSString *const kXMPPvCardTempElement = @"vCard";
 - (void)removeEmailAddress:(XMPPvCardTempEmail *)email { }
 - (void)setEmailAddresses:(NSArray *)emails {
     
+//    获取EMAIL标签
     NSArray *emailEles = [self elementsForName:@"EMAIL"];
     if (emailEles.count != 0 && emails.count!=0) {
         NSXMLElement *email = emailEles[0];
+//        创建新的USERID的标签
         NSXMLElement *userID = [NSXMLElement elementWithName:@"USERID" stringValue:emails[0] ];
+//        移除USERID标签
         [email removeElementForName:@"USERID"];
+//        添加新的USERID标签
         [email addChild:userID];
     }
 }

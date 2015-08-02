@@ -8,7 +8,9 @@
 
 #import "WeChatXMPPTool.h"
 
-@interface WeChatXMPPTool()
+NSString *const WeChatLoginStatusChangeNotification=@"WeChatLoginStatusNotification";
+
+@interface WeChatXMPPTool()<XMPPStreamDelegate>
 {
     XMPPResaultBlock _resaultblock;
     
@@ -87,6 +89,8 @@ singleton_implementation(WeChatXMPPTool)
 //    激活
     [_message activate:_xmppStream];
     
+    _xmppStream.enableBackgroundingOnSocket=YES;
+    
     //    设置代理
     [_xmppStream addDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
 }
@@ -98,6 +102,9 @@ singleton_implementation(WeChatXMPPTool)
     {
         [self SetUpXMPPStream];
     }
+//    调用方法发送通知
+    [self PostNotification:XMPPResaultTypeConnecting];
+    
     NSString *username=nil;
     if (self.isRegisterOperation) {
         //    从应用单例中获取用户名
@@ -126,6 +133,15 @@ singleton_implementation(WeChatXMPPTool)
         FYLog(@"%@",error);
     }
 }
+
+-(void)PostNotification:(XMPPResaultType)resaultType
+{
+//    将登录状态放入字典  通过通知传递
+    NSDictionary *userInfo=@{@"loginStatus":@(resaultType)};
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:WeChatLoginStatusChangeNotification object:nil userInfo:userInfo];
+}
+
 //  发送密码进行授权
 -(void)SendPasswordToHost
 {
@@ -187,10 +203,19 @@ singleton_implementation(WeChatXMPPTool)
 #pragma mark --与主机断开连接
 -(void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
 {
+    
+    if (error && _resaultblock) {
+        _resaultblock(XMPPResaultTypeNetError);
+    }
+    
     if (error)
     {
         FYLog(@"与主机连接失败 %@",error);
+//        通知网络不稳定   通知historyviewcontroller
+        [self PostNotification:XMPPResaultTypeNetError];
     }
+    
+    
 }
 #pragma mark --密码发送  授权成功
 -(void)xmppStreamDidAuthenticate:(XMPPStream *)sender
@@ -202,6 +227,8 @@ singleton_implementation(WeChatXMPPTool)
     {
         _resaultblock(XMPPResaultTypeLoginSuccess);
     }
+    
+    [self PostNotification:XMPPResaultTypeLoginSuccess];
 }
 #pragma mark --密码发送  授权失败
 -(void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(DDXMLElement *)error
@@ -213,6 +240,8 @@ singleton_implementation(WeChatXMPPTool)
     {
         _resaultblock(XMPPResaultTypeLoginFailure);
     }
+    
+    [self PostNotification:XMPPResaultTypeLoginFailure];
 }
 #pragma mark --注册成功
 -(void)xmppStreamDidRegister:(XMPPStream *)sender{
@@ -227,6 +256,24 @@ singleton_implementation(WeChatXMPPTool)
     FYLog(@"注册失败");
     if (_resaultblock) {
         _resaultblock(XMPPResaultTypeRegisterFailure);
+    }
+}
+#pragma mark --收到好友消息调用的方法
+-(void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
+{
+    NSLog(@"%@",message);
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+        FYLog(@"应用程序在后台");
+//        设置本地通知
+        UILocalNotification *localnoti=[[UILocalNotification alloc]init];
+//        设置通知的内容
+        localnoti.alertBody=[NSString stringWithFormat:@"%@\n%@",message.fromStr,message.body];
+//        设置通知执行的时间
+        localnoti.fireDate=[NSDate date];
+//        设置声音
+        localnoti.soundName=@"default";
+//        执行通知
+        [[UIApplication sharedApplication] scheduleLocalNotification:localnoti];
     }
 }
 #pragma mark -- 公共方法
@@ -273,4 +320,5 @@ singleton_implementation(WeChatXMPPTool)
 {
     [self teardownXmpp];
 }
+
 @end

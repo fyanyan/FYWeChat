@@ -25,7 +25,7 @@
     NSLog(@"%@",path);
     
     // 配置xmpp的日志
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+//    [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
     [WeChatNavigationController setupNaBarThem];
 //    从沙盒中加载用户的数据单例
@@ -37,8 +37,13 @@
     {
      UIStoryboard *storyboard= [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         self.window.rootViewController=storyboard.instantiateInitialViewController;
-//        自动登录服务器
-        [[WeChatXMPPTool sharedWeChatXMPPTool] login:nil];
+        
+//        1秒后在自动登录   一般情况下都不会马上连接  都会稍微等等
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //        自动登录服务器
+            [[WeChatXMPPTool sharedWeChatXMPPTool] login:nil];
+        });
+
     }
 //    else
 //    {
@@ -46,6 +51,13 @@
 //        self.window.rootViewController=storyboard.instantiateInitialViewController;
 //    }
    
+//    注册应用接收通知
+    if ([[UIDevice currentDevice].systemVersion doubleValue ]>8.0) {
+        UIUserNotificationSettings *setting=[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories: nil];
+        [application registerUserNotificationSettings:setting];
+
+    }
+    
     return YES;
 }
 

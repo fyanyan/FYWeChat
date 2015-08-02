@@ -10,12 +10,17 @@
 #import "Singleton.h"
 #import "XMPPFramework.h"
 
+
+extern NSString *const WeChatLoginStatusChangeNotification;
+
 typedef enum
 {
+    XMPPResaultTypeConnecting,//连接中
     XMPPResaultTypeLoginSuccess,//登陆成功
     XMPPResaultTypeLoginFailure, //登陆失败
     XMPPResaultTypeRegisterSuccess,//注册成功
-    XMPPResaultTypeRegisterFailure//注册失败
+    XMPPResaultTypeRegisterFailure,//注册失败
+    XMPPResaultTypeNetError
 }XMPPResaultType;
 typedef  void (^XMPPResaultBlock)(XMPPResaultType type);//Xmpp请求结果的block
 
